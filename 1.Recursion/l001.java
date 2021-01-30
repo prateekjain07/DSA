@@ -16,7 +16,9 @@ public class l001{
         set2();
     }
 
-
+    public static void set3() {
+        
+    }
     //===================================================================================================
     public static void set2() {
         // for(String a: subSeqReturn("abc")){

@@ -1,73 +1,13 @@
-1 - jtw
-2 - ktw
-3 - ltw
-4 - juw
-5 - kuw
-6 - luw
-7 - jvw
-8 - kvw
-9 - lvw
-10 - jtx
-11 - ktx
-12 - ltx
-13 - jux
-14 - kux
-15 - lux
-16 - jvx
-17 - kvx
-18 - lvx
-19 - jty
-20 - kty
-21 - lty
-22 - juy
-23 - kuy
-24 - luy
-25 - jvy
-26 - kvy
-27 - lvy
-28 - jtz
-29 - ktz
-30 - ltz
-31 - juz
-32 - kuz
-33 - luz
-34 - jvz
-35 - kvz
-36 - lvz
-jtw
-jtx
-jty
-jtz
-juw
-jux
-juy
-juz
-jvw
-jvx
-jvy
-jvz
-ktw
-ktx
-kty
-ktz
-kuw
-kux
-kuy
-kuz
-kvw
-kvx
-kvy
-kvz
-ltw
-ltx
-lty
-ltz
-luw
-lux
-luy
-luz
-lvw
-lvx
-lvy
-lvz
-36
+RRBB
+RRBLBR
+RRBLLBRR
+RBRB
+RBBR
+RBLBRR
+BRRB
+BRBR
+BRTRBB
+BBRR
+BBRTRB
+BBRTTRBB
+12
