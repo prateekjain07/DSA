@@ -5,18 +5,63 @@ class l002_floodfill{
             
         int[][] dir = {{0,1}, {1,0}, {0,-1}, {-1,0}};
         // System.out.println(allWaysWithDirectionVector(0,0,2,2, new boolean[3][3], "" ,dir, "RBLT" ));
-        int[][] dir2 = {{2,1}, {1,2}, {2,-1}, {1,-2},{-2,1}, {-1,2}, {-2,-1}, {-1,-2}};
-        int n=8;
-        int[][] matrix = new int[n][n];
-        int[][] ans = new int[n][n];
-        knightTour(0,0,matrix,0,ans,dir2);
-        for(int i=0; i<matrix.length; i++){
-            for(int j=0; j<matrix.length; j++){
-                System.out.print(ans[i][j] + " ");
-            }
-            System.out.println();    
+        // Knights Tour I/O
+        // int[][] dir2 = {{2,1}, {1,2}, {2,-1}, {1,-2},{-2,1}, {-1,2}, {-2,-1}, {-1,-2}};
+        // int n=8;
+        // int[][] matrix = new int[n][n];
+        // int[][] ans = new int[n][n];
+        // knightTour(0,0,matrix,0,ans,dir2);
+        // for(int i=0; i<matrix.length; i++){
+        //     for(int j=0; j<matrix.length; j++){
+        //         System.out.print(ans[i][j] + " ");
+        //     }
+        //     System.out.println();    
+        // }
+        
+        int[][] matrix = new int[5][5];
+        System.out.println(shortestFloodfill(matrix, 1,2,4,4,dir));
+    }
+    //Longest & Shortest path in Floodfill
+    public static int longestFloodfill(int[][] matrix, int sr, int sc, int dr, int dc, int[][] dir) {
+        if(sr == dr && sc == dc){
+            return 1;
+        }
+        matrix[sr][sc]= 1;
+        int maxPath = 0;
+        for(int d=0; d<dir.length; d++){
+            int r = sr + dir[d][0];
+            int c = sc + + dir[d][1];
+
+            if(r>=0 && r<matrix.length && c>=0 && c<matrix[0].length && matrix[r][c]==0){
+                maxPath = Math.max(maxPath,longestFloodfill(matrix,r,c,dr,dc,dir));
+            } 
         }
         
+        
+        matrix[sr][sc]= 0;
+        return maxPath;        
+
+    }
+
+    public static int shortestFloodfill(int[][] matrix, int sr, int sc, int dr, int dc, int[][] dir) {
+        if(sr == dr && sc == dc){
+            return 1;
+        }
+        matrix[sr][sc]= 1;
+        int minPath = matrix[0].length*matrix.length +1;
+        for(int d=0; d<dir.length; d++){
+            int r = sr + dir[d][0];
+            int c = sc + + dir[d][1];
+
+            if(r>=0 && r<matrix.length && c>=0 && c<matrix[0].length && matrix[r][c]==0){
+                minPath = Math.min(minPath,shortestFloodfill(matrix,r,c,dr,dc,dir));
+            } 
+        }
+        
+        
+        matrix[sr][sc]= 0;
+        return minPath;        
+
     }
 
     public static void knightTour(int sr, int sc, int[][] matrix, int sq, int[][] ans, int[][] dir){
