@@ -1,20 +1,12 @@
-b01q0 - b13q1 - b20q2 - b32q3 - 
-b02q0 - b10q1 - b23q2 - b31q3 - 
-CombSummationNQueenNoKill:  2
-Call: 87
-b01q0 - b13q1 - b20q2 - b32q3 - 
-b02q0 - b10q1 - b23q2 - b31q3 - 
-CombSummationNQueenNoKill_Optimised:  2
-Call: 87
-b01q0 - b13q1 - b20q2 - b32q3 - 
-b02q0 - b10q1 - b23q2 - b31q3 - 
-CombSummationNQueenNoKill_OptimisedSubseq:  2
-Call: 445
-b01q0 - b13q1 - b20q2 - b32q3 - 
-b02q0 - b10q1 - b23q2 - b31q3 - 
-CombSummationNQueenNoKill_Optimised(PerRow)Summation:  2
-Call: 17
-b01q0 - b13q1 - b20q2 - b32q3 - 
-b02q0 - b10q1 - b23q2 - b31q3 - 
-CombSummationNQueenNoKill_Optimised(PerRow)SummationWithBits:  2
-Call: 17
++L++++++++
++O++++++++
++N++++++++
++DELHI++++
++O+++C++++
++N+++E++++
++++++L++++
+++ANKARA++
++++++N++++
++++++D++++
+
+1

@@ -3,8 +3,47 @@ class l003_PnC{
     static int calls= 0;
     public static void main(String[] args) {
         // CoinChangePnC();
-        NQueenPnC();
+        // NQueenPnC();
+        System.out.println("Solns: " + PermWithoutDup("aba",""));
     }
+
+    //===================================================================
+    //PnC with Duplicates Involved
+    public static int PermWithoutDup(String str, String ans) {
+        if(str.length() == 0){
+            System.out.println(ans);
+            return 1;
+        }
+        int count = 0;
+        boolean[] vis = new boolean[26];
+        for(int i=0; i<str.length(); i++){
+            char ch = str.charAt(i);
+            if(!vis[ch-'a']){
+                vis[ch-'a'] = true;
+                String ros = str.substring(0,i) + str.substring(i+1);
+                count += PermWithoutDup(ros,ans+ch);    
+            }    
+        }
+        return count;
+        
+    }
+    public static int PermWithDup(String str, String ans) {
+        if(str.length() == 0){
+            System.out.println(ans);
+            return 1;
+        }
+        int count = 0;
+        for(int i=0; i<str.length(); i++){
+            char ch = str.charAt(i);
+            String ros = str.substring(0,i) + str.substring(i+1);
+            count += PermWithDup(ros,ans+ch);
+        }
+        return count;
+        
+    }
+
+    //===================================================================
+    //N Queen
     public static void NQueenPnC() {
 
         //1D Boxes
