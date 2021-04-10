@@ -1,9 +1,13 @@
+import java.util.LinkedList;
+
 class l001 {
 
   public static void main(String[] args) {
     // twoPointer();
     // floodfill();
-    gfg();
+    // gfg();
+    // noOfWays();
+    numDecodings("***");
   }
 
   public static void print(int[] dp) {
@@ -24,6 +28,191 @@ class l001 {
     System.out.println();
   }
 
+  //==================================================================
+  //Leetcode #639 - No of Ways to decode
+  static int mod = 1000000000 + 7;
+
+  public static void numDecodings(String s) {
+    long[] dp = new long[s.length() + 1];
+    // for(int i=0; i<=s.length(); i++)	dp[i] = -1;
+    Arrays.fill(dp, -1);
+    System.out.println(numDecodings2(s, 0, dp));
+  }
+
+  public static long numDecodingsAB(String s, int idx, long[] dp) {
+    // if(idx == s.length())	return dp[idx] = 1;
+    // if(s.charAt(idx) == '0')	return dp[idx] = 0;
+    // if(dp[idx]!=-1)		return dp[idx];
+
+    long a = 1, b = 0;
+	//A is for Single Digit Calls and B for double digit calls
+    for (int idx = s.length() - 1; idx >= 0; idx--) {
+      long count = 0;
+
+      char ch = s.charAt(idx);
+      char ch2 = '-';
+      if (idx < s.length() - 1) ch2 = s.charAt(idx + 1);
+
+      if (ch == '0') 
+	  	count = 0; 
+
+	  else if (ch == '*') {
+        //Single Digit Calls
+        count = (count + 9 * a % mod) % mod;
+
+        if (
+          idx < s.length() - 1 && ch2 >= '0' && ch2 <= '6'
+        ) count = (count + 2 * b % mod) % mod; 
+		else if ( // *0-6 - 10-16,20-26
+          idx < s.length() - 1 && ch2 >= '7'
+        ) count = (count + b % mod) % mod; 
+		else if ( // *7,8,9 - 17,18,19
+          idx < s.length() - 1 && ch2 == '*'
+        ) count = (count + 15 * b % mod) % mod; //** - 11-19, 21-26
+      } else {
+        //Single Digit Calls
+        count = (count + a % mod) % mod;
+
+        if (idx < s.length() - 1 && ch2 == '*') {
+          if (ch == '1') count = (count + 9 * b % mod) % mod; 
+		  else if (ch == '2') count = (count + 6 * b % mod) % mod;
+        } else if (idx < s.length() - 1) {
+          int num = (ch - '0') * 10 + (ch2 - '0');
+          if (num <= 26) count = (count + b % mod) % mod;
+        }
+      }
+
+      b = a;
+      a = count;
+    }
+
+    return a;
+  }
+
+  public static long numDecodings2(String s, int idx, long[] dp) {
+    if (idx == s.length()) return dp[idx] = 1;
+    if (s.charAt(idx) == '0') return dp[idx] = 0;
+    if (dp[idx] != -1) return dp[idx];
+
+    long count = 0;
+    char ch = s.charAt(idx);
+    char ch2 = '-';
+    if (idx < s.length() - 1) ch2 = s.charAt(idx + 1);
+
+    if (ch == '*') {
+      //Single Digit Calls
+      count = (count + 9 * numDecodings2(s, idx + 1, dp) % mod) % mod;
+
+      if (
+        idx < s.length() - 1 && ch2 >= '0' && ch2 <= '6'
+      ) count = // *0-6 - 10-16,20-26
+        (count + 2 * numDecodings2(s, idx + 2, dp) % mod) % mod; else if (
+        idx < s.length() - 1 && ch2 >= '7'
+      ) count = (count + numDecodings2(s, idx + 2, dp) % mod) % mod; else if ( // *7,8,9 - 17,18,19
+        idx < s.length() - 1 && ch2 == '*'
+      ) count = (count + 15 * numDecodings2(s, idx + 2, dp) % mod) % mod; //** - 11-19, 21-26
+    } else {
+      //Single Digit Calls
+      count = (count + numDecodings2(s, idx + 1, dp) % mod) % mod;
+
+      if (idx < s.length() - 1 && ch2 == '*') {
+        if (ch == '1') count =
+          (count + 9 * numDecodings2(s, idx + 2, dp) % mod) % mod; else if (
+          ch == '2'
+        ) count = (count + 6 * numDecodings2(s, idx + 2, dp) % mod) % mod;
+      } else if (idx < s.length() - 1) {
+        int num = (ch - '0') * 10 + (ch2 - '0');
+        if (num <= 26) count =
+          (count + numDecodings2(s, idx + 2, dp) % mod) % mod;
+      }
+    }
+
+    return dp[idx] = count;
+  }
+
+  //===================================================================
+  //No of Ways with Roll Dice
+  public static void noOfWays() {
+    int n = 10;
+    int[] dp = new int[n + 1];
+    // System.out.println(NFWRollDice_memo(n,dp,0));
+    // print(dp);
+    System.out.println(NFWRollDice_DP(n, dp));
+    print(dp);
+
+    System.out.println(NFWRollDice_DP_Opti(n));
+    System.out.println(NFWRollDice_DP_Opti2(n));
+  }
+
+  public static int NFWRollDice_memo(int n, int[] dp, int idx) {
+    if (idx == n) return dp[n] = 1;
+
+    if (dp[idx] != 0) return dp[idx];
+
+    int count = 0;
+    for (int i = 1; i + idx <= n && i <= 6; i++) {
+      count += NFWRollDice_memo(n, dp, i + idx);
+    }
+
+    return dp[idx] = count;
+  }
+
+  public static int NFWRollDice_DP(int n, int[] dp) {
+    for (int i = n; i >= 0; i--) {
+      if (i == n) {
+        dp[i] = 1;
+        continue;
+      }
+
+      int count = 0;
+      for (int idx = 1; i + idx <= n && idx <= 6; idx++) {
+        count += dp[i + idx];
+      }
+
+      dp[i] = count;
+    }
+
+    return dp[0];
+  }
+
+  public static int NFWRollDice_DP_Opti(int n) {
+    //Using a Linked List
+    LinkedList<Integer> ll = new LinkedList<>();
+    int sum = 0;
+    for (int i = n; i > 0; i--) {
+      if (i == n) {
+        ll.add(1);
+        sum = 1;
+        continue;
+      }
+
+      if (ll.size() < 6) {
+        ll.add(sum);
+        sum += sum;
+      } else {
+        ll.add(sum);
+        sum += sum - ll.removeFirst();
+      }
+    }
+    return sum;
+  }
+
+  public static int NFWRollDice_DP_Opti2(int n) {
+    //Using Array
+    int len = 7;
+    int[] arr = new int[len];
+    for (int i = 0; i <= n; i++) {
+      if (i <= 1) {
+        arr[i] = 1;
+        continue;
+      }
+      if (arr[i % len] == 0) arr[i % len] = 2 * arr[(i - 1) % len]; else arr[i %
+        len] =
+        2 * arr[(i - 1) % len] - arr[i % len];
+    }
+    return arr[n % len];
+  }
+
   //===================================================================
   //					GEEKSFORGEEKS
   public static void gfg() {
@@ -34,9 +223,9 @@ class l001 {
   //================gfg/friends-pairing-problem========================
   public static void gfgFPP() {
     int n = 4;
-	int[] dp = new int[n+1];
-	System.out.println("Friends Pair: " + friendsPair(n,dp));
-	print(dp);
+    int[] dp = new int[n + 1];
+    System.out.println("Friends Pair: " + friendsPair(n, dp));
+    print(dp);
   }
 
   public static int friendsPair(int n, int[] dp) {
@@ -48,32 +237,32 @@ class l001 {
     int pairUp = (n - 1) * friendsPair(n - 2, dp);
     return dp[n] = single + pairUp;
   }
-  public static int friendsPairDP(int N, int[] dp) {
-	for(int n=0;n<=N; n++){
-		if(n==0 || n==1){
-			dp[n] = 1;
-			continue;
-		}
 
-		int single = dp[n-1];
-		int pairUp = (n - 1) * dp [n - 2];
-		dp[n] = single + pairUp;
-	
-	}
-	return dp[N];
-  }	
-  public static long friendsPairDP_Opti(int N) {
-	long a=1, b=1;
-	long div = 1000000007;
-	for(int n=2;n<=N; n++){
-	
-		long ans = (b%div + ((n-1)*a)%div)%div;
-		a = b;
-		b = ans;
-	
-	}
-	return b%div;
+  public static int friendsPairDP(int N, int[] dp) {
+    for (int n = 0; n <= N; n++) {
+      if (n == 0 || n == 1) {
+        dp[n] = 1;
+        continue;
+      }
+
+      int single = dp[n - 1];
+      int pairUp = (n - 1) * dp[n - 2];
+      dp[n] = single + pairUp;
+    }
+    return dp[N];
   }
+
+  public static long friendsPairDP_Opti(int N) {
+    long a = 1, b = 1;
+    long div = 1000000007;
+    for (int n = 2; n <= N; n++) {
+      long ans = (b % div + ((n - 1) * a) % div) % div;
+      a = b;
+      b = ans;
+    }
+    return b % div;
+  }
+
   //================ gfg/gold-mine-problem/ ===========================
   public static void gfgGoldMine() {
     int[][] mat = { { 2, 1 }, { 1, 2 } };
