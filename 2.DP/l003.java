@@ -9,8 +9,10 @@ class l003 {
   public static void main(String[] args) {
     // coinChangeDriver();
     // subsetSumDriver();
-    KnapsackDriver();
+    // KnapsackDriver();
     // LC_416_Driver();
+    // noOfSolutionsDriver();
+    LIS_Driver();
   }
 
   public static void print(int[] dp) {
@@ -31,6 +33,190 @@ class l003 {
     System.out.println();
   }
   public static int calls = 0;
+  //=====================================================================
+      //LC 354: Russian Doll Envelopes
+    //Same code is valid for GFG Building Bridges
+    public static int RDE_Driver(int[][] env) {
+      Arrays.sort(env, new Comparator<int[]>(){
+          public int compare(int[] a, int[] b){
+              // if(a[0] < b[0]) return -1;
+              // if(a[0] > b[0]) return 1;
+
+              // if(a[1] < b[1]) return 1;
+              // return -1;
+
+              if(a[0] != b[0])    return a[0] - b[0];
+              return b[1] - a[1];
+          }
+          }
+      });
+      return RDE(env);
+  }
+  public static int RDE(int[][] env) {
+      int[] dp = new int[env.length];
+      int max = 1;
+      // dp[0] = 1;
+      for(int i=0; i<env.length; i++){
+          dp[i] = 1;
+          for(int j=i-1; j>=0; j--){
+              if(env[i][1] > env[j][1])
+                  dp[i] = Math.max(dp[i], dp[j]+1);
+          }
+          max = Math.max(max, dp[i]);
+      }
+      return max;
+  }
+  //=================================================================
+  //Longest Increasing Subsequence
+  public static void LIS_Driver() {
+    int arr[] = {0,8,4,12,2,10,6,14,1,9,5,13,3,11,7,15};
+    int maxLen = 0;
+    int dp_LIS[] = new int[arr.length];
+    int dp_LDS[] = new int[arr.length];
+    int dp_LBS[] = new int[arr.length];
+
+    print(arr);
+    // for(int i=arr.length-1; i>=0; i--){
+    //   maxLen = Math.max(maxLen,LIS_Rec(arr,i,dp));
+    // }
+
+    //LIS
+    // maxLen = LIS_DP(arr,dp_LIS);
+    // print(dp_LIS);    
+    // System.out.println("LIS: " + maxLen);
+
+    // //LDS
+    // maxLen=0;
+    // maxLen = LDS_DP(arr,dp_LDS);
+    // print(dp_LDS);
+    // System.out.println("LDS: " + maxLen);
+
+    //LBS 
+    maxLen=0;
+    maxLen = LBS(arr,dp_LIS,dp_LDS,dp_LBS);
+    print(dp_LBS);
+    System.out.println("LBS: " + maxLen);
+
+  }
+  public static int LIS_Rec(int[] arr, int n, int[] dp) {
+    if(n==0){//Redundant
+      return dp[n] = 1;
+    }
+    if(dp[n]!=0)  return dp[n];
+    int maxLen = 1;
+    for(int i = n-1; i>=0; i--){
+      if(arr[i]<arr[n]){
+        int len = LIS_Rec(arr,i,dp);
+        maxLen = Math.max(maxLen,len+1);
+      }
+    }
+
+    return dp[n] = maxLen;
+  }
+  public static int LIS_DP(int[] arr, int[] dp) {
+    int maxLen = 1;
+    //we can also initialise our DP with 1 since it's the lowest possible ans
+    for(int idx=0; idx<arr.length; idx++){
+      dp[idx] = 1;
+      for(int i=idx-1; i>=0; i--){
+        if(arr[i]<arr[idx]){
+          dp[idx] = Math.max(dp[idx], dp[i] + 1);
+        }
+      }
+      maxLen = Math.max(maxLen,dp[idx]);
+    }
+    return maxLen;
+  }
+
+  public static int LDS_DP(int[] arr, int[] dp) {
+    int maxLen = 1;
+    int n = arr.length;
+    //Going other way than LIS
+    //we can also initialise our DP with 1 since it's the lowest possible ans
+    for(int idx=n-1; idx>=0; idx--){
+      dp[idx] = 1;
+      for(int i=idx+1; i<n; i++){
+        if(arr[i]<arr[idx]){
+          dp[idx] = Math.max(dp[idx], dp[i] + 1);
+        }
+      }
+      maxLen = Math.max(maxLen,dp[idx]);
+    }
+    return maxLen;
+  }
+        //Longest Bitonic Sequence
+  public static int LBS(int []arr, int[] dp_LIS, int[] dp_LDS, int[] dp_LBS) {
+    //LBS = LDS + LIS - 1  at particular point
+    // LIS_DP(arr,dp_LIS);
+    // LDS_DP(arr,dp_LDS);
+    
+    int maxLen = 1;
+    for(int i=0; i<dp_LIS.length; i++){
+      dp_LBS[i] = dp_LDS[i] + dp_LIS[i] - 1;
+      maxLen = Math.max(maxLen, dp_LBS[i]);
+    }
+    
+    return maxLen;
+  }
+
+  //=====================================================================
+  //LC 494: Target Sum
+  public int findTargetSumWays(int[] nums, int target) {
+    int sum = 0;
+    for(int a: nums)    sum+= a;
+    if(nums.length == 0)    return 0;
+    if(target>sum || target<-sum)   return 0;
+    int[][] dp = new int[nums.length+1][2*sum +1];
+    for(int[] d: dp)    Arrays.fill(d,-1);
+    return  findTargetSumWays2(nums, target, 0,dp,sum);
+    
+}
+public int findTargetSumWays2(int[] nums, int tar, int idx, int[][] dp,int sum) {
+    if(tar>sum|| tar<-sum) return 0;
+    if(tar == 0 && idx == nums.length){
+        // System.out.println(str);
+        return dp[idx][tar+sum] = 1;
+    }    
+    if(idx == nums.length){
+        return dp[idx][tar+sum] = 0;
+    }
+    if(dp[idx][tar+sum] != -1) return dp[idx][tar+sum];
+    int count = 0;
+    count += findTargetSumWays2(nums, tar - nums[idx], idx+1,dp,sum);//Positive
+    count += findTargetSumWays2(nums, tar + nums[idx], idx+1,dp,sum);//Negative
+    
+    return dp[idx][tar+sum] = count;
+} 
+  //==================================================================
+  //https://www.geeksforgeeks.org/find-number-of-solutions-of-a-linear-equation-of-n-variables/
+  public static void noOfSolutionsDriver() {
+    int[] coeff = {2,2,3};
+    int rhs = 4;
+    int[][] dp = new int[coeff.length+1][rhs+1];
+    for(int[] a: dp)  Arrays.fill(a, -1);
+    System.out.println(noOfSolutions(coeff,rhs,0, "",dp) + "  " + calls);
+    print2D(dp);
+  }
+  public static int noOfSolutions(int[] coeff, int rhs, int idx, String str, int[][] dp) {
+    calls++;
+    if(rhs == 0){
+      System.out.println(str);
+      return dp[idx][rhs] = 1;
+    }
+    if(idx == coeff.length) return dp[idx][rhs]  = 0;
+
+    if(dp[idx][rhs]!= -1 )  return dp[idx][rhs];
+    int m = 1;
+    int count = 0;
+    while(rhs - coeff[idx]*m>=0){
+      count += noOfSolutions(coeff, rhs - coeff[idx]*m, idx+1, str + coeff[idx]+" * " + m + " + ",dp);
+      m++;
+    }
+    count += noOfSolutions(coeff, rhs, idx+1, str +coeff[idx]+" * " + 0 + " + ",dp);
+    
+    return dp[idx][rhs] = count;
+  }
+
   //==================================================================
   //LC 416 : Partition Equal Subset Sum
   public boolean canPartitionDriver(int[] nums) {
