@@ -1,0 +1,28 @@
+Loop1 IDX : -1, 0
+Loop1 IDX : -1, 1
+Loop1 IDX : -1, 2
+Loop1 IDX : -1, 3
+Loop1 IDX : -1, 4
+Loop1 IDX : -1, 5
+Loop2 IDX : 0, 5
+Possible Answer IDX : 0, 5
+Loop1 IDX : 0, 6
+Loop1 IDX : 0, 7
+Loop1 IDX : 0, 8
+Loop1 IDX : 0, 9
+Loop1 IDX : 0, 10
+Loop2 IDX : 1, 10
+Loop2 IDX : 2, 10
+Loop2 IDX : 3, 10
+Loop2 IDX : 4, 10
+Loop2 IDX : 5, 10
+Possible Answer IDX : 5, 10
+Loop1 IDX : 5, 11
+Loop1 IDX : 5, 12
+Loop2 IDX : 6, 12
+Loop2 IDX : 7, 12
+Loop2 IDX : 8, 12
+Loop2 IDX : 9, 12
+Possible Answer IDX : 9, 12
+Possible Answer IDX : 9, 12
+MWS : BANC
