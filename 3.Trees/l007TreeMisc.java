@@ -1,3 +1,4 @@
+//git add . && git commit -m "Commit" && git push origin master
 public class l007TreeMisc{
     public static class TreeNode{
         int val = 0;
@@ -12,6 +13,118 @@ public class l007TreeMisc{
         
     }
 
+    //===================================================================
+    // LC 662 : Maximum Width of Binary Tree
+    public int widthOfBinaryTree(TreeNode root) {
+        if(root == null)    return 0;
+
+        long ans = 0;
+        LinkedList<pairG> que = new LinkedList<>();
+        que.addLast(new pairG(root, 1)); //We're starting idx from 1 for reference
+        while(que.size() != 0){
+            int size = que.size();
+            long fi = que.getFirst().idx;
+            long li = que.getFirst().idx;
+
+            while(size-- > 0){
+                pairG p = que.removeFirst();
+                TreeNode node = p.node;
+                long idx = p.idx;
+
+                if(node.left!=null) que.addLast(new pairG(node.left, 2* idx));
+                if(node.right!=null) que.addLast(new pairG(node.right, 2* idx + 1));
+
+
+            }
+        }
+
+    }
+    public static class pairG {
+        TreeNode node = null;
+        long idx = 0;
+        pairG(TreeNode node, long idx){
+            this.node = node;
+            this.idx = idx;
+        }
+    }
+    
+    //===================================================================
+    //LC 437 : Path Sum III
+    public static int ans = 0;
+    public static int pathSum_Driver(TreeNode root, int targetSum) {
+        ans = 0;
+        HashMap<Integer, Integer> map = new HashMap<Integer, Integer>();
+        map.put(0,1);
+        pathSum_ans(root, targetSum, 0, map);
+        return ans;
+    }
+    public static void pathSum_ans(TreeNode root, int targetSum, int prefixSum, HashMap<Integer, Integer> map) {
+        if(root == null)    return;
+
+        prefixSum += root.val;
+        ans += map.getOrDefault(prefixSum - targetSum, 0);
+
+        map.put(prefixSum, map.getOrDefault(prefixSum, 0) + 1);
+
+        pathSum_ans(root.left, targetSum, prefixSum, map);
+        pathSum_ans(root.right, targetSum, prefixSum, map);
+
+        map.put(prefixSum, map.get(prefixSum) - 1);
+        if(map.get(prefixSum) == 0)     map.remove(prefixSum);
+
+    }
+    
+    //===================================================================
+    //LC 653 : Two Sum Problem in a BST
+    public static boolean findTarget(TreeNode root, int k) {
+        return findTarget_ans(root, k).size() > 0;
+    }
+    public static void pushLeftNodes(TreeNode node, LinkedList<TreeNode> st) {
+        while(node != null){
+            st.addFirst(node);
+            node = node.left;
+        }
+    }
+    public static void pushRightNodes(TreeNode node, LinkedList<TreeNode> st) {
+        while(node != null){
+            st.addFirst(node);
+            node = node.right;
+        }
+    }
+    public static List<List<Integer>> findTarget_ans(TreeNode root, int k) {
+        LinkedList<TreeNode> LST = new LinkedList<>();
+        LinkedList<TreeNode> RST = new LinkedList<>();
+        List<List<Integer>> myAns = new ArrayList<>();
+        pushLeftNodes(root, LST);
+        pushRightNodes(root, RST);
+
+        TreeNode leftTop = LST.getFirst(), rightTop = RST.getFirst();
+        while(leftTop.val <= rightTop.val && leftTop != rightTop){
+            if(leftTop.val + rightTop.val > k){
+                TreeNode rn = RST.removeFirst();
+                pushRightNodes(rn.left, RST);
+                rightTop = RST.getFirst();
+            }
+            else if(leftTop.val + rightTop.val < k){
+                TreeNode ln = LST.removeFirst();
+                pushLeftNodes(ln.right, LST);
+                leftTop = LST.getFirst();
+            }
+            else{
+                ArrayList<Integer> temp = new ArrayList<>();
+                temp.add(leftTop.val);
+                temp.add(rightTop.val);
+                myAns.add(temp);
+                TreeNode rn = RST.removeFirst();
+                pushRightNodes(rn.left, RST);
+                rightTop = RST.getFirst();
+                TreeNode ln = LST.removeFirst();
+                pushLeftNodes(ln.right, LST);
+                leftTop = LST.getFirst();    
+            }
+        }
+        return myAns;
+    }
     //===================================================================
     //LC 230. Kth Smallest Element in a BST
     //------- O(1) space O(N) time
