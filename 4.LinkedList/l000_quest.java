@@ -12,19 +12,133 @@ public class l000_quest{
         }
     }
     //===========================================================================
-    //Pep : Reverse Nodes of a Linked List in K Group
-    public static ListNode reverseInKGroup(ListNode head, int k) {
-        int ct = 0;
-        ListNode curr = head, prev= null, newHead = null, tempTail = head;
-        while(curr!= null){
-            ct++;
-            if(ct == k){
-                ct = 0;
-                tempTail = curr;
+    //LC #92 & Pep : Reverse Nodes of a Linked List in a Given Range
 
-            }
+    //-- Class Approach
+    public static ListNode reverseInRange(ListNode head, int n, int m) {
+        if(head == null || head.next == null || n == m)
+            return head;
+        n--;    //Hack since the code was working for index n+1 to m
+        tH = tT = null;
+        ListNode oH = null, oT = null; //originalHead, originalTail
+        ListNode curr = head, forw = null, prev = null, newHead = null;
+        int idx = 0;
+        while(idx < n){
+            idx++;
+            prev = curr; 
+            curr = curr.next;
         }
-        return newHead == null ? head : newHead;
+        idx++;
+        while(idx>= n && idx<=m){
+            forw = curr.next;
+            curr.next = null;
+            addFirstNode(curr);
+            curr = forw;
+            idx++;
+        }
+        if(prev != null){
+            prev.next = tH;
+            newHead = head;
+        }
+        else{
+            newHead = tH;
+        }
+        tT.next = forw; 
+                
+        return newHead;
+
+    }
+
+    // -- my Code : find the suitable pointers and reverse LL from n to m
+    public static ListNode reverseInRange_00(ListNode head, int n, int m) {
+        if(head == null || head.next == null || n == m)
+            return head;
+        
+        int idx = 0;
+        ListNode curr = head, tH = null, tT = null, tHP = null, newHead = null;
+        while(curr != null){
+            idx++;
+            if(idx == n)    tH = curr;
+            if(idx == n - 1)    tHP = curr;
+            if(idx == m)    tT = curr;
+            curr = curr.next;
+        }
+
+        ListNode tTN = tT.next, tHC = tH;
+        tT.next = null;
+        tH = reverseLL(tH);
+        tHC.next = tTN;
+
+        if(tHP == null){
+            newHead = tH;
+        }
+        else{
+            newHead = head;
+            tHP.next = tH;
+        }
+
+        return newHead;
+    }
+
+    
+    
+    //===========================================================================
+    //LC #25 & Pep : Reverse Nodes of a Linked List in K Group
+    
+    public static int lengthOfList(ListNode head) {
+        int len = 0;
+        ListNode curr = head;
+        while(curr != null){
+            curr = curr.next;
+            len++;
+        }
+        return len;
+    }
+
+    static  ListNode tH = null, tT = null; //temporaryHead, temporaryTail
+
+    public static void addFirstNode(ListNode node) {
+        if(tH == null){
+            tH = tT = node;
+        }
+        else{
+            node.next = tH;
+            tH = node;
+        }
+    }
+    
+    public static ListNode reverseInKGroup(ListNode head, int k) {
+        if(head == null || head.next == null || k <= 1)
+            return head;
+            
+        tH = tT = null;
+        ListNode oH = null, oT = null; //originalHead, originalTail
+        int len = lengthOfList(head);
+        ListNode curr = head, forw = null;
+        while(curr != null && len >= k){
+            int tempK = k;
+            while(curr != null && tempK-->0){
+                forw = curr.next;
+                curr.next = null;
+                addFirstNode(curr);
+                curr = forw;
+            }
+
+            if(oH == null){
+                oH = tH;
+                oT = tT;
+            }else{
+                oT.next = tH;
+                oT = tT;
+            }
+
+            tH = tT = null;
+            len -= k;
+
+        }
+        oT.next = curr;
+
+        return oH;
     }
 
     //===========================================================================
