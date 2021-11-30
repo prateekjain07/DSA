@@ -1,3 +1,4 @@
+//Complete https://leetcode.com/tag/linked-list/
 public class l000_quest{
     public static void main(String[] args) {
         
@@ -12,7 +13,279 @@ public class l000_quest{
         }
     }
     //===========================================================================
+    //LC #148 & Pep : Quick Sort in Linked List
+    public static ListNode[] quickSort(ListNode head) {
+        if(head == null || head.next == null){
+            return head;
+        }
+        ListNode dummySmall = new ListNode(-1), dummyLarge = new ListNode(-1); 
+        //dummy Small, dummy Large
+        ListNode pivotNode = midNode(head), curr = head, dummyS = dummySmall, dummyL = dummyLarge;
+        // while(pivotNode.next != null)    pivotNode = pivotNode.next;
+        int pivotNodeVal = pivotNode.val;
+        while(curr != null){
+            if(curr == pivotNode){
+                //Do Nothing
+            }
+            else if(curr.val <= pivotNodeVal){
+                dummyS.next = curr;
+                dummyS = dummyS.next;
+            }
+            else{
+                dummyL.next = curr;
+                dummyL = dummyL.next;    
+            }
+            curr = curr.next;
+        }
+        dummyL.next = dummyS.next = null; 
+        //Make it a habit to terminate the tails even though it seems redundant
+        //This Code gives three Lists, small List, pivotNode, Large List
+
+
+        ListNode[] leftAns = quickSort(dummySmall.next);
+        ListNode[] rightAns = quickSort(dummyLarge.next);
+
+        dummySmall.next = leftAns[0];
+        dummyLarge.next = rightAns[0];
+
+        // ListNode dummySTail = getTail(dummySmall.next);
+        if(leftAns[1] == null)
+            dummySmall.next = pivotNode;
+        else
+            dummySTail.next = pivotNode;
+
+        pivotNode.next = dummyLarge.next;
+
+        return new ListNode[]{dummySmall.next, dummyL};
+    }
+
+    
+    public static ListNode quickSort(ListNode head) {
+        if(head == null || head.next == null){
+            return head;
+        }
+        ListNode dummySmall = new ListNode(-1), dummyLarge = new ListNode(-1); 
+        //dummy Small, dummy Large
+        ListNode pivotNode = midNode(head), curr = head, dummyS = dummySmall, dummyL = dummyLarge;
+        // while(pivotNode.next != null)    pivotNode = pivotNode.next;
+        int pivotNodeVal = pivotNode.val;
+        while(curr != null){
+            if(curr == pivotNode){
+                //Do Nothing
+            }
+            else if(curr.val <= pivotNodeVal){
+                dummyS.next = curr;
+                dummyS = dummyS.next;
+            }
+            else{
+                dummyL.next = curr;
+                dummyL = dummyL.next;    
+            }
+            curr = curr.next;
+        }
+        dummyL.next = dummyS.next = null; 
+        //Make it a habit to terminate the tails even though it seems redundant
+        //This Code gives three Lists, small List, pivotNode, Large List
+
+        dummySmall.next = quickSort(dummySmall.next);
+        dummyLarge.next = quickSort(dummyLarge.next);
+
+        ListNode dummySTail = getTail(dummySmall.next);
+        if(dummySTail == null)
+            dummySmall.next = pivotNode;
+        else
+            dummySTail.next = pivotNode;
+
+        pivotNode.next = dummyLarge.next;
+
+        return dummySmall.next;
+    }
+
+    //===========================================================================
+    //Pep : Segregate Nodes of a Linked over Pivot Index
+
+    public static ListNode segregate(ListNode head, int pivotIdx) {
+        ListNode dummySmall = new ListNode(-1), dummyLarge = new ListNode(-1); 
+        //dummy Small, dummy Large
+        ListNode pivotNode = head, curr = head, dummyS = dummySmall, dummyL = dummyLarge;
+        while(pivotNode.next != null && pivotIdx-- > 0)    pivotNode = pivotNode.next;
+        int pivotNodeVal = pivotNode.val;
+        while(curr != null){
+            if(curr == pivotNode){
+                //Do Nothing
+            }
+            else if(curr.val <= pivotNodeVal){
+                dummyS.next = curr;
+                dummyS = dummyS.next;
+            }
+            else{
+                dummyL.next = curr;
+                dummyL = dummyL.next;    
+            }
+            curr = curr.next;
+        }
+        dummyL.next = dummyS.next = null; 
+        //Make it a habit to terminate the tails even though it seems redundant
+
+        //This Code gives three Lists, small List, pivotNode, Large List
+
+        dummyS.next = pivotNode;
+        pivotNode.next = dummyLarge.next;
+
+        return dummySmall.next;
+      }
+    
+    //===========================================================================
+    //Pep : Segregate Nodes of a Linked over Last Index
+    public static ListNode segregateOnLastIndex(ListNode head) {
+        ListNode dummySmall = new ListNode(-1), dummyLarge = new ListNode(-1); 
+        //dummy Small, dummy Large
+        ListNode lastNode = head, curr = head, dummyS = dummySmall, dummyL = dummyLarge;
+        while(lastNode.next != null)    lastNode = lastNode.next;
+        int lastNodeVal = lastNode.val;
+        while(curr != null){
+            if(curr.val <= lastNodeVal){
+                dummyS.next = curr;
+                dummyS = dummyS.next;
+            }
+            else{
+                dummyL.next = curr;
+                dummyL = dummyL.next;    
+            }
+            curr = curr.next;
+        }
+        dummyL.next = dummyS.next = null; 
+        //Make it a habit to terminate the tails even though it seems redundant
+
+        dummyS.next = dummyLarge.next;
+
+        return dummyS;
+    }
+    
+    
+    //===========================================================================
+    //Pep : Segregate 012 Node of a Linked List Over Swapping Nodes
+
+    public static ListNode segregate012(ListNode head) {
+        if (head == null || head.next == null)
+            return head;
+        ListNode curr = head, dummyEven = new ListNode(0),
+        dummyOdd = new ListNode(-1), dummy2 = new ListNode(-2);
+
+        ListNode dEven = dummyEven, dOdd = dummyOdd, d2 = dummy2;
+
+        while(curr != null){
+        // ListNode nextNode = curr.next;
+
+            if(curr.val == 0){
+                dEven.next = curr;
+                dEven = dEven.next;
+            }
+            else if(curr.val == 1){
+                dOdd.next = curr;
+                dOdd = dOdd.next;
+            }
+            else{
+                d2.next = curr;
+                d2 = d2.next;
+            }
+
+            curr = curr.next;
+        }
+
+        //Special Case :  2 - 2 - 2 - null
+        //Connections need to be handled better in this code
+        dOdd.next = dummy2.next; // LL 1 -> LL2
+        dEven.next = dummyOdd.next; // LL 0 -> LL1
+        d2.next = null;
+        //In general, join the list in the reverse order that is
+        // LL n - 1 -> LL n
+        // LL n - 2 -> LL n - 1
+        // LL n - 3 -> LL n - 2
+        // -----
+        // LL 1 -> LL 2
+        // LL 0 -> LL 1
+
+                
+        dummyOdd.next = null;
+        dummy2.next = null;
+        return dummyEven.next;
+
+    }
+    //===========================================================================
+    //Pep : Segregate 01 Node of a Linked List Over Swapping Nodes
+
+    public static ListNode segregate01(ListNode head) {
+        if (head == null || head.next == null)
+            return head;
+        //Same Code of Segregating Odd Even Nodes work here
+        ListNode curr = head, dummyEven = new ListNode(-2),
+        dummyOdd = new ListNode(-1);
+
+        ListNode dEven = dummyEven, dOdd = dummyOdd;
+
+        while(curr != null){
+        // ListNode nextNode = curr.next;
+
+            if(curr.val % 2 == 0){
+                dEven.next = curr;
+                dEven = dEven.next;
+            }else{
+                dOdd.next = curr;
+                dOdd = dOdd.next;
+            }
+
+            curr = curr.next;
+        }
+
+        dEven.next = dummyOdd.next;
+        dOdd.next = null;
+                
+        dummyOdd.next = null;
+        return dummyEven.next;
+
+    }
+
+    //===========================================================================
     //LC #92 & Pep : Reverse Nodes of a Linked List in a Given Range
+
+    //-- Actual Class Code
+    public static ListNode reverseInRange(ListNode head, int n, int m) {
+        if (head == null || head.next == null || m == n)
+            return head;
+
+        ListNode curr = head;
+        ListNode prev = null;
+
+        int idx = 1;
+        while (idx < m) {
+            while (idx >= n && idx <= m) {
+                ListNode forw = curr.next;
+                curr.next = null;
+
+                addFirst(curr);
+
+                curr = forw;
+                idx++;
+            }
+
+            // if (idx > n) {
+            if (idx > m) {  //Logically, this makes more sense
+                    tt.next = curr;
+                if (prev != null) {
+                    prev.next = th;
+                    return head;
+                }
+
+                return th;
+            }
+            idx++;
+            prev = curr;
+            curr = curr.next;
+        }
+
+        return head;
+    }
 
     //-- Class Approach
     public static ListNode reverseInRange(ListNode head, int n, int m) {
@@ -204,6 +477,7 @@ public class l000_quest{
 
     }
     public static ListNode getTail(ListNode head) {
+        if(head == null)    return head;
         ListNode curr = head;
         while(curr.next!=null)  curr = curr.next;
         return curr;
