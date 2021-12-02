@@ -11,6 +11,76 @@ public class l001{
             this.val = val;
         }
     }
+    class Node {
+        int val;
+        Node next;
+        Node random;
+    
+        public Node(int val) {
+            this.val = val;
+            this.next = null;
+            this.random = null;
+        }
+    }
+
+    //===========================================================================
+    //LC #138 & Pep : Copy Linked List with Random Pointers
+    public static Node copyRandomList(Node head) {
+        Node curr = head;
+        //S1: Attaching new nodes in between the list
+        while(curr != null){
+            Node copyNode = new Node(curr.val);
+            Node forw = curr.next;
+            copyNode.next = forw;
+            curr.next = copyNode;
+            curr = forw;
+        }
+
+        //S2: Random Nodes Attachment
+        curr = head;
+        while(curr != null){
+            Node nextRandom = curr.random, currCopy = curr.next;
+            
+            currCopy.random = (nextRandom != null) ? nextRandom.next : null;
+
+            curr = currCopy.next;
+        }
+
+        //S3: Segregating Two Lists
+        return segregateEvenOdd(head);
+
+    }
+
+    public static Node segregateEvenOdd(Node head) {
+        //Segregates ODD EVEN LISTS and
+        //Returns Even List
+        Node curr = head, dummyEven = new Node(-2),
+                             dummyOdd = new Node(-1);
+ 
+        Node dEven = dummyEven, dOdd = dummyOdd;
+        int idx = 1;
+        while(curr != null){
+            // Node nextNode = curr.next;
+
+            if(idx % 2 == 0){
+                dEven.next = curr;
+                dEven = dEven.next;
+            }else{
+                dOdd.next = curr;
+                dOdd = dOdd.next;
+            }
+            idx++;
+            curr = curr.next;
+        }
+
+        dEven.next = dOdd.next = null;
+        // dEven.next = dummyOdd.next;
+        // dOdd.next = null;
+                            
+        // dummyOdd.next = null;
+        return dummyEven.next;
+    }
+
 
     //===========================================================================
     //LC #43(Converted String to LL) & Pep : Multipy Two Linked List as if the List Represents digits of a Number
