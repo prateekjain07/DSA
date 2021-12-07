@@ -23,6 +23,211 @@ public class l001{
         }
     }
 
+    //============================================================
+    //LC #82 & Pep : Delete All Duplicate Nodes from a LL
+
+    public static ListNode deleteAllDuplicates_class(ListNode head) {
+        if(head == null || head.next == null)
+            return head;
+ 
+        ListNode dummy = new ListNode(-1), curr = head, prev = dummy;
+        dummy.next = head;
+        while(curr != null){
+            boolean hasLoopRun = false;
+            while(curr.next != null && prev.next.val == curr.next.val){
+                curr = curr.next;
+                hasLoopRun = true;
+            }
+            if(!hasLoopRun) prev = prev.next;
+            else prev.next = curr.next;
+            curr = curr.next;
+        }
+
+        return dummy.next;
+    }
+        public static ListNode deleteAllDuplicates(ListNode head) {
+        if(head == null || head.next == null)
+            return head;
+ 
+        ListNode curr = head, prev = head, prevOfPrev = null;
+        int d = 1;
+        while(prev != null){
+            d = 1;
+            curr = prev.next;
+            while(curr != null && curr.val == prev.val){
+                curr = curr.next;
+                d++;
+            }
+            if(d > 1){
+                if(prevOfPrev == null){
+                    head = curr;
+                }
+                else{
+                    prevOfPrev.next = curr;
+                }
+
+            }
+            else{
+                prevOfPrev = prev;
+                // prev.next = curr;    
+            }
+            prev = curr;
+
+        }
+        return head;
+    }
+    
+    
+    //============================================================
+    //LC #83 & Pep : Delete Duplicate Nodes from a LL
+    public static ListNode deleteDuplicates(ListNode head) {
+        if(head == null || head.next == null)
+            return head;
+
+        ListNode curr = head, prev = head;
+        while(prev != null){
+            curr = prev.next;
+            while(curr != null && curr.val == prev.val){
+                curr = curr.next;
+            }
+            prev.next = curr;
+            prev = curr;
+        }
+        
+        return head;
+    }
+    //============================================================
+    //LC #24 : Swape Nodes in Pairs
+    public ListNode swapPairs(ListNode head) {
+        if(head == null || head.next == null)
+            return head;
+
+        ListNode curr = head, tH = null, tT = null, st = null, newHead = null, nTail = null;
+        int stSize = 0;
+        while(curr != null){
+            ListNode forw = curr.next;
+            if(tH == null){
+                tH = tT = curr;
+                curr.next = null;
+                stSize++;
+            }
+            else{
+                tH = curr;
+                tH.next = tT;
+                stSize++;
+                tT.next = null;
+            }
+            if(stSize == 2){
+                if(newHead == null){
+                    newHead = tH;
+                    nTail = tT;
+                }
+                else{
+                    nTail.next = tH;
+                    nTail = tT;
+                }
+                tH = tT = null;
+                stSize = 0;
+                
+            }
+            curr = forw;
+        }
+        if(tH != null){
+            nTail.next = tH;
+            nTail = tT;
+
+        }
+        return newHead;
+    }
+
+    //CYCLE IN A LINKED LIST=====================================
+
+    //Finding out All the variables of equation A = C + (B + C)M'
+    public static void allVariablesOfCycle(ListNode head) {
+        ListNode meetingPoint = meetingPointOfCycleInLL(head);
+        if(meetingPoint == null || meetingPoint.next == null)
+            return null;
+        
+        ListNode slow = head, fast = meetingPoint;
+        int lenOfA = 0, mDash = 0, cycleLen = 0; //mDash is cycleCount
+        while(slow != fast){ //This code fails in the situation when A = 0
+            fast = fast.next;
+            slow = slow.next;
+
+            if(fast == meetingPoint){
+                mDash++;
+            }
+            lenOfA++;
+       
+        }
+        // Here both slow = fast = cyclePoint 
+        ListNode cyclePoint = slow;
+
+        slow = meetingPoint;
+        slow = slow.next;
+        cycleLen = 1;
+        while(slow != meetingPoint){
+            slow = slow.next;
+            cycleLen++;
+        }
+
+        int C  = A % cycleLen; 
+        int B = cycleLen - C;
+        int m = mDash + 1;
+    }
+
+        
+    }
+    //-----------------------------------------------------------
+    //LC #141 & Pep : Find Cycle Point in a LL
+    public static ListNode meetingPointOfCycleInLL(ListNode head) {
+        //if return is null or return.next is null => no cycle
+        if(head == null || head.next == null)   return null;
+
+        ListNode slow = head, fast = head;
+        while(fast != null && fast.next != null){
+            fast = fast.next.next;
+            slow = slow.next;
+
+            if(slow == fast)
+                break;
+        }
+
+        return fast;
+    }   
+
+    public static ListNode detectCycle(ListNode head) {
+        ListNode meetingPoint = meetingPointOfCycleInLL(head);
+        if(meetingPoint == null || meetingPoint.next == null)
+            return null;
+        
+        ListNode slow = head, fast = meetingPoint;
+
+        while(slow != fast){
+            slow = slow.next;
+            fast = fast.next;
+        }
+        return slow; //Cycle Point
+    }
+
+    //-----------------------------------------------------------
+    //LC #141 & Pep : Detect Cycle in a LL
+    public static boolean  hasCycle(ListNode head) {
+        if(head == null || head.next == null)   return false;
+
+        ListNode slow = head, fast = head;
+        while(fast != null && fast.next != null){
+            fast = fast.next.next;
+            slow = slow.next;
+
+            if(slow == fast)
+                break;
+        }
+
+        return fast == slow;
+    
+    }
+
     //===========================================================================
     //LC #138 & Pep : Copy Linked List with Random Pointers
     public static Node copyRandomList(Node head) {
