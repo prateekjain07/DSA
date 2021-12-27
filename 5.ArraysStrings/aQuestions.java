@@ -1,3 +1,4 @@
+import java.util.HashMap;
 
 public class aQuestions{
     public static void main(String[] args) {
@@ -16,7 +17,95 @@ public class aQuestions{
         // }
     }
     //=============================================================
+    //LC #1248 : Count Number of Nice Subarrays
+    public static int numberOfSubarrays(int[] nums, int k) {
+        return atmostKOddIntegers(nums, k) - atmostKOddIntegers(nums, k-1);
+    }
+    // Count All Subarrays with Atmost K Odd Integers
+    public static int atmostKOddIntegers(int[] arr, int k) {
+        int si = 0, ei = 0, count = 0, numCount = 0;
+        // int[] freq = new int[100001];
+        while(ei < arr.length){
+            if((arr[ei] & 1) == 1){
+                numCount++;
+            }
+            // freq[arr[ei++]]++;
+            ei++;
+            while(numCount > k){
+                if((arr[si] & 1) == 1)  numCount--;
+                
+                // freq[arr[si++]]--;
+                si++;
+            }
+            count+= ei - si;
+        }
+        // System.out.println(count);
+        return count;
+    }
+    //=============================================================
+    //LC #992 : Count All Subarrays with K Distinct Integers
+    public static int subarraysWithKDistinct(int[] nums, int k) {
+        return atmostKDistinct(nums, k) - atmostKDistinct(nums, k-1);
+    }
+    // -- Count All Subarrays with Atmost K Distinct Integers
+    public static int atmostKDistinct(int[] arr, int k) {
+        int si = 0, ei = 0, count = 0, numCount = 0;
+        int[] freq = new int[20001];
+        while(ei < arr.length){
+            if(freq[arr[ei++]]++ == 0)    numCount++;
+
+            while(numCount > k){
+                if(freq[arr[si++]]-- == 1)  numCount--;
+            }
+            count+= ei - si;
+        }
+        return count;
+    }
+    public static int atmostKDistinct_Class(int[] arr, int k) {
+        int si = 0, ei = 0, count = 0; // numCount = 0;
+        HashMap<Integer, Integer> freq = new HashMap<>();
+        while(ei < arr.length){
+            freq.put(arr[ei], freq.getOrDefault(arr[ei], 0) + 1);
+            ei++;
+
+            while(freq.size() > k){
+                freq.put(arr[si], freq.getOrDefault(arr[si], 0) - 1);    
+                if(freq.get(arr[si]) == 0)  freq.remove(arr[si]);
+
+                si++;
+            }
+            count+= ei - si;
+        }
+        return count;
+    }
+    //=============================================================
+    //LC #1456 : Max Number of Vowels in a Sub-string of Length K
+    public static int maxVowels(String s, int k) {
+        String vowels = "aeiou";
+        int maxCount = 0, count = 0, ei = 0, si=0;
+        for(;ei < k; ei++){
+            char ch = s.charAt(ei);
+            if(vowels.indexOf(ch) != -1)    count++;
+        }
+        maxCount = Math.max(maxCount, count);
+        
+        while(ei < s.length()){
+            char ch2 = s.charAt(si++);
+            if(vowels.indexOf(ch2) != -1)    count--;
+        
+            char ch = s.charAt(ei++);
+            if(vowels.indexOf(ch) != -1)    count++;
+            
+            maxCount = Math.max(maxCount, count);
+    
+        }
+        return maxCount;
+        
+    }
+    //=============================================================
     //LC #159 : Longest Substring with atmost two Distinct Characters
+    //GFG : Smallest Distinct Window -- Alteration of this code only 
+    //  where String T is determined by us containing all distinct letters
     public static String minWindow(String s, String t) {
         if(s.length() < t.length()) return "";
         int si = 0,ei = 0, n = t.length(), minLen = (int)1e8, count = 0, i=0, gsi = 0, gei=0;
@@ -46,6 +135,8 @@ public class aQuestions{
     }
     //=============================================================
     //LC #159 & LintCode #968: Longest Substring with atmost two Distinct Characters
+    //LC #340 & LintCode #386: Longest Substring with atmost K Distinct Characters 
+    //--- Just check charCount > K in while loop
     public int lengthOfLongestSubstringTwoDistinct(String s) {
         int maxLen = 0, si = 0, ei = 0, charCount = 0;
         int freq[] = new int[128];
