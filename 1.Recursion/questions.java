@@ -1,6 +1,6 @@
 class questions{
     //============Leet #980=======================
-    public static int uniquePathIII(int[][] grid) {
+    public static void uniquePathIII(int[][] grid) {
         int n = grid.length, m = grid[0].length;
         int sr, sc, er,ec, freeCell = 0;
         for(int i=0; i<n; i++){
