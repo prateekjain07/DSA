@@ -1,4 +1,5 @@
 import java.util.HashMap;
+import java.util.Map;
 
 public class aQuestions{
     public static void main(String[] args) {
@@ -16,154 +17,150 @@ public class aQuestions{
         //     System.out.print(i + ", ");
         // }
     }
-    //###########################################################
-    //SEARCHING A LITTLE
-    //LC #1011: Capacity To Ship Packages within D Days
-    public static int shipWithinDays(int[] weights, int days) {
-        int maxEle = 0;
-        for(int i : weights){
-            maxEle = Math.max(maxEle, i);
-            
-        }
-        int si = maxEle, n = weights.length, ei = maxEle*n;
-         while(si < ei){
-            int mid = (si + ei)/2;
-            if(daysNeeded(weights, mid) <= days){
-                ei = mid;
+    // IMP - Kadane's Algorithm
+    public static int KadanesAlgo(int[] arr) {
+        int gSum = 0, cSum = 0, gsi = 0, gei = 0, csi = 0;
+        for(int i =0; i<arr.length; i++){
+            int ele = arr[i];
+            cSum += ele;
+            if(cSum > gSum) { //If asked which array, it can be coded here
+                gSum = cSum;
+                gsi = csi;
+                gei = i;
             }
-            else{
-                si = mid + 1;
+            if(cSum < 0) { //To move si 
+                cSum = 0;
+                csi = i + 1;
             }
         }
-        return si;
+        return gSum;
     }
-    public static int daysNeeded(int[] weights, int capacity){
-        int days = 0;
-        int w = 0;
-        for(int i : weights){
-            if(w + i <= capacity)
-                w += i;
-            else{
-                w = i;
-                days++;
-            }
+
+    //=============================================================
+    //=============================================================
+    //=============================================================
+    // GFG : No of Subarrays with Equal 1s and 0s
+    static int countSubarrWithEqualZeroAndOne(int arr[], int n)
+    {
+        // add your code here
+        Map<Integer, Integer> map  = new HashMap<>();
+        map.put(0,1);
+        int ei = 0, count = 0, sum = 0;
+        while(ei < n) {
+            sum += (arr[ei++] == 0) ? -1 : 1;
+            count += map.getOrDefault(sum, 0);
+            map.put(sum, map.getOrDefault(sum, 0) + 1);
         }
-        return ++days;
+        return count;
     }
-    //======================================================================
-    //LC #875 : Koko Eating Bananas
-    public int minEatingSpeed(int[] piles, int h) {
-        int maxEle = 0;
-        for(int i : piles){
-            maxEle = Math.max(maxEle, i);
+    //=============================================================
+    // LC #974 : No. of Subarrays whose sum is divisible by K
+    public int subarraysDivByK(int[] arr, int k) {
+        int n = arr.length;
+        int[] remainder = new int[k];
+        int sum = 0, ans = 0, ei = 0;
+        while(ei < n){
+            sum += arr[ei++];
+            int r = (sum % k + k)%k;
+
+            ans += remainder[r];
+            remainder[r]++;
         }
-        int si = 1, ei = maxEle;
-        while(si < ei){
-            int mid = (si + ei)/2;
-            if(eatingHours(piles, mid) <= h){
-                ei = mid;
+
+        return ans;
+    }
+    //=============================================================
+    // LC #1004 : Max Consecutive Ones III  by flipping atmost K '0'
+    public int findMaxConsecutiveOnesFlip1_conventional(int[] arr, int k) {
+        int n = arr.length, si = 0, ei = 0, count0 = 0, len = 0;
+        while(ei<n){
+            if(arr[ei++] == 0)  count0++;
+
+            while(count0 > k) {
+                if(arr[si++] == 0)  count0--;
             }
-            else{
-                si = mid + 1;
-            }
-            
+
+            len = Math.max(len, ei - si);
         }
-        return si;
+        
+        return len;
+    }
+
+    //=============================================================
+    // LC #485 : Max Consecutive Ones
+    public int findMaxConsecutiveOnes_simple(int[] nums) {
+        int ones = 0, maxOnes = 0;  
+        for(int a: nums) {
+            if(a == 1) {
+                ones++;
+                maxOnes = Math.max(maxOnes, ones);
+            } else {
+                ones = 0;
+            }
+        }
+        return maxOnes;
         
     }
-    public static int eatingHours(int[] piles, int speed){
-        int hours = 0;
-        for(int i : piles){
-            hours += (i-1)/speed + 1;
-        }
-        return hours;
-    }
-    //======================================================================
-    //IMPORTANT LC #154: Find Minimum in Rotated Sorted Array (Duplicates)
-    public int findMinInRSAWithDuplicates(int[] nums) {
-        int si = 0, ei = nums.length - 1;
-        while(si < ei){
-            int mid = (si + ei)/2;
-            if(nums[mid]<nums[ei]){  // Sorted from si to mid
-                ei = mid;
-            } else if(nums[mid] > nums[ei]){
-                si = mid + 1;
-            } else{
-                ei--;
-            }
-        }
+    public int findMaxConsecutiveOnes_optimised(int[] arr) {
+        int n = arr.length, si = 0, ei = 0, count0 = 0, len = 0;
+        while(ei<n){
+            if(arr[ei++] == 0)
+                si = ei;
 
-        return nums[si];
-    }
-    //IMPORTANT LC #153: Find Minimum in Rotated Sorted Array (Unique)
-    public static int findMin(int[] nums) {
-        int si = 0, ei = nums.length - 1;
-        while(si < ei){
-            int mid = (si + ei)/2;
-            if(nums[mid]<nums[ei]){  // Sorted from si to mid
-                ei = mid;
-            } else{
-                si = mid + 1;
-            }
+            len = Math.max(len, ei - si);
         }
-
-        return nums[si];
+        
+        return len;
     }
-    //======================================================================
-    //IMPORTANT LC #81: Search in a Rotated Sorted Array (Duplicates Involved)
-    public static boolean searchRSA2(int[] nums, int target) {
-        int si = 0, ei = nums.length - 1;
-        while(si <= ei){
-            int mid = si + (ei - si)/2;
-            if(nums[mid] == target || nums[si] == target) return true;
+    public int findMaxConsecutiveOnes_conventional(int[] arr) {
+        int n = arr.length, si = 0, ei = 0, count0 = 0, len = 0;
+        while(ei<n){
+            if(arr[ei++] == 0)  count0++;
 
-            if(nums[si] < nums[mid]){ // si to mid, nums is sorted
-                if(nums[si] < target && nums[mid] > target){
-                    ei = mid - 1;
-                }
-                else
-                    si = mid  + 1;
+            while(count0 > 0) {
+                if(arr[si++] == 0)  count0--;
             }
-            else if(nums[ei] > nums[mid]){
-                if(nums[mid] < target && nums[ei] >= target){
-                    si = mid + 1;
-                }
-                else
-                    ei = mid - 1;
-            }
-            else{
-                si++;
-            }
+
+            len = Math.max(len, ei - si);
         }
-        return false;   
+        
+        return len;
     }
-    //IMPORTANT LC #33 : Search in a Rotated Sorted Array
-    public static int searchRSA(int[] nums, int target) {
-        int si = 0, ei = nums.length - 1;
-        while(si <= ei){
-            int mid = si + (ei - si)/2;
-            if(nums[mid] == target) return mid;
+    //=============================================================
+    // LC #930 : Binary Subarrays with Sum
+    public int numSubarraysWithSum(int[] nums, int goal) {
+        return atmostSum(nums, goal) - (goal > 0 ? atmostSum(nums, goal - 1) : 0);
+    }
 
-            // if(nums[si] <= nums[mid]){ // si to mid, nums is sorted
-            if(si == mid || nums[si] < nums[mid]){ // si to mid, nums is sorted
-                //Condition is <= and not just < for the time si == mid
-                if(nums[si] <= target && nums[mid] > target){
-                    ei = mid - 1;
-                }
-                else
-                    si = mid  + 1;
+    public int atmostSum(int[] arr, int tar) {
+        int n = arr.length, ei = 0, si = 0, sum = 0, count = 0;
+        while(ei<n) {
+            sum += arr[ei++];
+            while(sum > tar) {
+                sum -= arr[si++];
             }
-            else{
-                if(nums[mid] < target && nums[ei] >= target){
-                    si = mid + 1;
-                }
-                else
-                    ei = mid - 1;
-            }
+            count += ei - si;
         }
-        return -1;
+        return count;   
     }
-    //###################################################################
+    //=============================================================
+    // LC #904 : Fruits into Basket
+    public int totalFruit(int[] fruits) {
+        // Map<Integer, Integer> map = new HashMap<>();
+        int[] arr = new int[100001];
+        int si = 0, n = fruits.length, ei = 0, len = 0, count = 0, k =2;
+        while(ei<n) {
+            if(arr[fruits[ei++]]++ == 0)    count++;
+
+            while(count > k) {
+                if(arr[fruits[si++]]-- == 1)    count--;
+            }
+
+            len = Math.max(len,ei - si);
+
+        }
+        return len;
+    }
     //=============================================================
     //LC #1248 : Count Number of Nice Subarrays
     public static int numberOfSubarrays(int[] nums, int k) {
